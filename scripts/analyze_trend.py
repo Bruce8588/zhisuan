@@ -32,8 +32,7 @@ class TrendAnalyzer:
 
     def _get_stock_file(self, symbol, code):
         """获取股票数据库文件路径"""
-        code_clean = code.replace('sz', '').replace('sh', '')
-        return os.path.join(self.db_dir, f"{symbol}_{code_clean}_min1.csv")
+        return os.path.join(self.db_dir, f"{symbol}_{code}_min1.csv")
 
     def _get_trend_file(self, symbol):
         """获取趋势判断文件路径"""
