@@ -75,11 +75,22 @@ class DataFetcher:
         return combined
 
     def fetch_and_merge(self, symbol, code, days=None, hours=None, start_date=None, end_date=None):
-        """获取并合并数据"""
+        """获取并合并数据（智能增量获取，节省配额）"""
         # 转换代码格式
         code_ifind = self.fetcher._convert_code(code)
         
-        # 确定获取范围
+        # 加载现有数据，检查最新日期
+        old_df = self._load_existing_data(symbol, code)
+        old_count = len(old_df)
+        
+        if old_df is not None and not old_df.empty:
+            latest_date = old_df['day'].max()
+            latest_str = latest_date.strftime('%Y-%m-%d %H:%M')
+        else:
+            latest_date = None
+            latest_str = "无历史数据"
+
+        # 确定获取范围（智能判断）
         if hours:
             end_time = datetime.now()
             start_time = end_time - timedelta(hours=hours)
@@ -93,11 +104,23 @@ class DataFetcher:
             start_time = end_time - timedelta(days=days)
             fetch_days = days
         else:
-            fetch_days = 7  # 默认7天
+            fetch_days = 7
 
-        # 加载现有数据
-        old_df = self._load_existing_data(symbol, code)
-        old_count = len(old_df)
+        # 智能优化：如果有历史数据，只获取增量部分
+        if latest_date is not None and hours is None and start_date is None:
+            # 计算需要获取的天数（从最新日期到今天）
+            days_since = (datetime.now() - latest_date).days
+            if days_since <= 0:
+                # 今天已有数据，无需获取
+                print(f"  {symbol}: 最新数据 {latest_str}，今日已存在，跳过")
+                return 0
+            elif days_since <= 3:
+                # 3天内数据，只获取需要的部分
+                fetch_days = days_since + 1
+                print(f"  {symbol}: 本地最新 {latest_str}，获取最近 {fetch_days} 天")
+            else:
+                # 数据较旧，提示用户
+                print(f"  {symbol}: 本地最新 {latest_str}，数据较旧，建议用 --days 指定范围")
 
         # 获取新数据
         new_df = self.fetcher.get_minute_data(code_ifind, days=fetch_days)
@@ -105,6 +128,14 @@ class DataFetcher:
         if new_df is None or new_df.empty:
             print(f"  {symbol}: 获取数据失败")
             return 0
+
+        # 过滤掉已有的旧数据（避免重复获取）
+        if latest_date is not None and not new_df.empty:
+            new_df = new_df[new_df['day'] > latest_date]
+            if new_df.empty:
+                print(f"  {symbol}: 无新增数据")
+                return 0
+            print(f"  {symbol}: 过滤后新增 {len(new_df)} 条")
 
         # 合并数据
         merged_df = self._merge_data(old_df, new_df)
