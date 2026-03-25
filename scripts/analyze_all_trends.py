@@ -38,10 +38,13 @@ def get_code_from_filename(filename):
 def analyze_stock(code, df_data):
     """分析单只股票"""
     try:
+        # 获取第一个价格作为 key_high
+        first_high = float(df_data.iloc[0]["high"])
+        
         # 初始化状态（从up开始，让趋势自然发展）
         state = init_state({
             "trend": "up",
-            "key_high": None,
+            "key_high": first_high,
             "key_low": None,
             "n_low": None,
             "n_high": None,
