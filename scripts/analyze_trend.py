@@ -58,10 +58,13 @@ class TrendAnalyzer:
             print(f"  {symbol}: 数据库为空")
             return None
 
-        # 处理列名
+        # 处理列名（统一为：day, high, low, close）
         column_map = {
-            '时间': 'day', '开盘': 'open', '收盘': 'close',
-            '最高': 'high', '最低': 'low', '成交量': 'volume'
+            '时间': 'day',
+            '开盘': 'open',
+            '收盘': 'close',
+            '最高': 'high',
+            '最低': 'low',
         }
         for old_col, new_col in column_map.items():
             if old_col in df.columns:
@@ -70,8 +73,24 @@ class TrendAnalyzer:
         df["day"] = pd.to_datetime(df["day"])
         df = df.sort_values("day").reset_index(drop=True)
 
-        # 初始化状态
-        state = init_state(info)
+        # 获取第一个价格作为关键点
+        first_close = float(df.iloc[0]["close"])
+
+        # 初始化状态（暂不加载初始配置）
+        # 默认：第一条数据为上升趋势，关键点为当前价格
+        state = init_state({
+            "trend": "up",
+            "key_high": first_close,
+            "key_low": None,
+            "n_low": None,
+            "n_high": None,
+            "rally_high": None,
+            "rally_low": None,
+            "secondary_low": None,
+            "secondary_high": None,
+            "break_low": None,
+            "break_high": None,
+        })
 
         # 分析每条数据
         records = []

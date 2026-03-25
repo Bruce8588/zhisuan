@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 
 # iFinD HTTP API 配置
-REFRESH_TOKEN = "eyJzaWduX3RpbWUiOiIyMDI2LTAzLTI0IDE1OjQxOjU3In0=.eyJ1aWQiOiI4NTU2ODc3MDciLCJ1c2VyIjp7InJlZnJlc2hUb2tlbkV4cGlyZWRUaW1lIjoiMjAyNi0wNC0yMyAxOTo0MDoyMCIsInVzZXJJZCI6Ijg1NTY4NzcwNyJ9fQ==.59732C8EBF1BE02BDE2884C02A872827BF64E818D71D15D04EB40A93772B23DB"
+REFRESH_TOKEN = "eyJzaWduX3RpbWUiOiIyMDI2LTAzLTI0IDIxOjI2OjI4In0=.eyJ1aWQiOiI4NTU2ODc3MDciLCJ1c2VyIjp7InJlZnJlc2hUb2tlbkV4cGlyZWRUaW1lIjoiMjAyNi0wNC0yMyAxOTo0MDoyMCIsInVzZXJJZCI6Ijg1NTY4NzcwNyJ9fQ==.E2C78E713CE0CDDE2E882969D4B4ABA0D3D266BA6284256BF7040C0A83273F0A"
 
 # API 地址
 TOKEN_URL = "https://quantapi.51ifind.com/api/v1/get_access_token"
@@ -63,16 +63,20 @@ class IFinDFetcher:
             print(f"✗ 请求access_token失败: {e}")
             return None
 
-    def get_minute_data(self, code, days=7):
+    def get_minute_data(self, code, days=7, mock=False):
         """获取N天的1分钟K线数据
         
         参数:
             code: 股票代码（格式：000001.SZ 或 600000.SH）
             days: 获取最近N天的数据，默认7天
+            mock: 是否使用模拟数据（用于测试，不消耗API配额）
         
         返回:
-            DataFrame: 包含 day, open, high, low, close, volume
+            DataFrame: 包含 day, high, low, close
         """
+        if mock:
+            return self._get_mock_data(code, days)
+        
         if not self.access_token:
             self._get_access_token()
         
@@ -112,27 +116,38 @@ class IFinDFetcher:
                     print(f"  无数据返回")
                     return None
                 
-                # 构建DataFrame
-                df = pd.DataFrame({
-                    "day": time_list,
-                    "open": table_data.get("open", []),
-                    "high": table_data.get("high", []),
-                    "low": table_data.get("low", []),
-                    "close": table_data.get("close", []),
-                    "volume": table_data.get("volume", [])
-                })
+                # 安全构建DataFrame：逐字段提取，长度不一致时截断
+                n = len(time_list)
+                row_data = {"day": time_list}
+                for field in ("high", "low", "close"):
+                    arr = table_data.get(field, [])
+                    if not isinstance(arr, list):
+                        arr = []
+                    row_data[field] = arr[:n] if len(arr) != n else arr
+                
+                df = pd.DataFrame(row_data)
+                
+                # 删除任意字段为空的行
+                before = len(df)
+                df = df.dropna(subset=["high", "low", "close"])
+                after = len(df)
+                if before != after:
+                    print(f"  过滤了 {before - after} 条不完整数据")
+                
+                if df.empty:
+                    print(f"  无有效数据")
+                    return None
                 
                 # 转换日期格式
                 df["day"] = pd.to_datetime(df["day"])
                 
-                # 过滤盘后数据（只保留14:57之前）
+                # 过滤盘后数据
                 df = df[(df["day"].dt.hour < 15) | 
                         ((df["day"].dt.hour == 14) & (df["day"].dt.minute <= 57))]
                 
                 return df
             else:
                 print(f"  API错误: {result.get('errmsg', '未知错误')}")
-                # token过期，尝试刷新
                 if "token" in str(result.get('errmsg', '')).lower():
                     self.access_token = None
                     return self.get_minute_data(code, days)
@@ -142,8 +157,40 @@ class IFinDFetcher:
             print(f"  请求异常: {e}")
             return None
 
+    def _get_mock_data(self, code, days=7):
+        """生成模拟数据，用于测试（不消耗API配额）"""
+        import random
+        end_time = datetime.now()
+        start_time = end_time - timedelta(days=days)
+        timestamps = pd.date_range(start=start_time, end=end_time, freq="1min")
+        base = 100.0 + random.uniform(-10, 10)
+        data = []
+        for ts in timestamps:
+            h, m = ts.hour, ts.minute
+            if h < 9 or (h == 9 and m < 30): continue
+            if h == 11 and m > 30 and m < 60: continue
+            if h >= 12 and h < 13: continue
+            if h == 15 and m > 0: continue
+            price = base + random.uniform(-2, 2)
+            spread = random.uniform(0.01, 0.1)
+            data.append({
+                "day": ts,
+                "high": round(price + spread, 2),
+                "low": round(price - spread, 2),
+                "close": round(price, 2)
+            })
+        return pd.DataFrame(data)
+
     def update_stock(self, symbol, code, days=7):
-        """更新单只股票数据并保存到CSV"""
+        """⚠️ [已废弃] 请使用 DataFetcher.fetch_and_merge() 代替
+        更新单只股票数据并保存到CSV
+        """
+        import warnings
+        warnings.warn(
+            "update_stock() 已废弃，请使用 scripts.fetch_data.DataFetcher",
+            DeprecationWarning,
+            stacklevel=2
+        )
         # 转换代码格式: sz000933 -> 000933.SZ
         code_ifind = self._convert_code(code)
         
@@ -171,7 +218,15 @@ class IFinDFetcher:
             return 0
 
     def update_stocks(self, stocks, days=7):
-        """批量更新多只股票"""
+        """⚠️ [已废弃] 请使用 DataFetcher.run() 代替
+        批量更新多只股票
+        """
+        import warnings
+        warnings.warn(
+            "update_stocks() 已废弃，请使用 scripts.fetch_data.DataFetcher",
+            DeprecationWarning,
+            stacklevel=2
+        )
         results = {}
         for symbol, info in stocks.items():
             code = info.get("code", "")

@@ -1,5 +1,5 @@
 # 股票配置 - 智算2.0
-# 共67只股票，统一管理
+# 共81只股票，统一管理
 
 ALL_STOCKS = {
     "铜陵有色": {"code": "sz000630", "eastmoney": "0.000630", "trend": "up_rally", "n_low": 6.79, "key_high": 9.19, "rally_high": 7.68},
@@ -27,7 +27,7 @@ ALL_STOCKS = {
     "东山精密": {"code": "sz002384", "eastmoney": "0.002384", "trend": "up", "key_high": 108.06},
     "中兴通讯": {"code": "sz000063", "eastmoney": "0.000063", "trend": "down", "key_low": 34.8},
     "中宠股份": {"code": "sz002891", "eastmoney": "0.002891", "trend": "down", "key_low": 43.75},
-    "中科创达": {"code": "sh600485", "eastmoney": "1.600485", "trend": "down_natural", "key_low": 64.87, "n_high": 73.32},
+    "中科创达": {"code": "sz300496", "eastmoney": "2.300496", "trend": "down_natural", "key_low": 64.87, "n_high": 73.32},
     "亿纬锂能": {"code": "sz300014", "eastmoney": "0.300014", "trend": "down", "key_low": 58.36},
     "依依股份": {"code": "sz001215", "eastmoney": "0.001215", "trend": "down", "key_low": 22},
     "兖矿能源": {"code": "sh600188", "eastmoney": "1.600188", "trend": "up", "key_high": 22.84},
