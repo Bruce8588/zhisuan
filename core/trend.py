@@ -149,6 +149,10 @@ def update_trend(state, high, low):
             break_high = high
         elif break_high is not None and n_high is not None and high is not None and high > break_high and high > n_high * 1.03:
             key_high = high
+            n_low = None  # 重置：进入新的上升周期
+            rally_high = None  # 重置：进入新的上升周期
+            secondary_low = None  # 重置：进入新的上升周期
+            rally_triggered = False  # 重置：进入新的上升周期
             new_trend = "up"
         elif break_high is not None and low is not None and low < break_high * 0.94:
             rally_low = low
