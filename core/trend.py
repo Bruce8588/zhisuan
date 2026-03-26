@@ -125,7 +125,7 @@ def update_trend(state, high, low):
             new_trend = "down_rally"
 
     elif trend == "down_rally":
-        if rally_low is not None and high is not None and high > rally_low * RALLY_THRESHOLD and (n_high is None or high <= n_high):
+        if rally_low is not None and high is not None and high > rally_low * RALLY_THRESHOLD:
             secondary_high = high
             new_trend = "down_secondary"
         elif rally_low is not None and low is not None and low < rally_low and (key_low is None or low >= key_low):
