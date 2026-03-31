@@ -75,7 +75,7 @@ def update_trend(state, high, low):
             secondary_low = n_low
             new_trend = "up_secondary"
         # 标准规则：跌破 rally_high × 0.94
-        elif rally_high is not None and low is not None and low < rally_high * PULLBACK_THRESHOLD and low >= n_low:
+        elif rally_high is not None and n_low is not None and low is not None and low < rally_high * PULLBACK_THRESHOLD and low >= n_low:
             secondary_low = low
             new_trend = "up_secondary"
         elif rally_high is not None and high is not None and high > rally_high and (key_high is None or high < key_high):
