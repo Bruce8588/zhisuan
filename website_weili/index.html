@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中山微立煌明照明有限公司</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-card: #141414;
+      --bg-card-hover: #1c1c1c;
+      --gold: #c9a84c;
+      --gold-light: #e8c86a;
+      --text-primary: #f0ece4;
+      --text-secondary: #9a9590;
+      --text-muted: #5a5550;
+      --border: #2a2a2a;
+      --warm-glow: rgba(201,168,76,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+    .nav-logo span { color: var(--text-secondary); font-weight: 300; }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute;
+      bottom: -4px; left: 0; width: 0; height: 1px;
+      background: var(--gold); transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-contact {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 8px 20px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .nav-contact:hover { background: var(--gold); color: var(--bg-dark); }
+
+    /* ===== HERO ===== */
+    .hero {
+      height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 60% at 50% 60%, rgba(201,168,76,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+    }
+    .hero-line {
+      width: 1px; height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+      margin-bottom: 40px;
+      animation: heroLine 2s ease-out forwards;
+    }
+    @keyframes heroLine {
+      from { opacity: 0; transform: scaleY(0); transform-origin: top; }
+      to { opacity: 1; transform: scaleY(1); }
+    }
+    .hero-subtitle {
+      font-size: 11px;
+      letter-spacing: 8px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.8s 0.3s ease forwards;
+    }
+    .hero-title {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 300;
+      letter-spacing: 12px;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
+    }
+    .hero-title strong { font-weight: 600; color: var(--gold); }
+    .hero-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      max-width: 500px;
+      margin-bottom: 60px;
+      opacity: 0; animation: fadeUp 0.8s 0.7s ease forwards;
+    }
+    .hero-cta {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--text-primary);
+      border: 1px solid var(--text-muted);
+      padding: 16px 48px;
+      text-transform: uppercase;
+      transition: all 0.4s;
+      opacity: 0; animation: fadeUp 0.8s 0.9s ease forwards;
+    }
+    .hero-cta:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 40px rgba(201,168,76,0.15);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-scroll {
+      position: absolute; bottom: 40px;
+      font-size: 10px; letter-spacing: 3px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* ===== SECTION COMMON ===== */
+    .section {
+      padding: 120px 60px;
+    }
+    .section-tag {
+      font-size: 11px;
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 300;
+      letter-spacing: 6px;
+      margin-bottom: 20px;
+    }
+    .section-title strong { font-weight: 600; }
+    .section-line {
+      width: 50px; height: 1px;
+      background: var(--gold);
+      margin-bottom: 20px;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.9;
+    }
+
+    /* ===== ABOUT ===== */
+    .about { background: var(--bg-card); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 60px auto 0;
+    }
+    .about-img {
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #1a1a1a, #222);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-img::before {
+      content: '✦';
+      font-size: 80px;
+      color: var(--gold);
+      opacity: 0.15;
+    }
+    .about-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 60% 40%, rgba(201,168,76,0.08), transparent 70%);
+    }
+    .about-text p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 2;
+      margin-bottom: 16px;
+    }
+    .about-stats {
+      display: flex; gap: 50px;
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 2px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ===== PRODUCTS ===== */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 60px auto 0;
+    }
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 48px 32px;
+      text-align: center;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.06), transparent 70%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .product-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .product-card:hover::before { opacity: 1; }
+    .product-icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+      display: block;
+    }
+    .product-name {
+      font-size: 16px;
+      letter-spacing: 4px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .product-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .product-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 4px 12px;
+      margin-top: 20px;
+      text-transform: uppercase;
+    }
+
+    /* ===== FEATURES ===== */
+    .features { background: var(--bg-card); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      max-width: 1200px;
+      margin: 60px auto 0;
+    }
+    .feature-item { text-align: center; }
+    .feature-num {
+      font-size: 48px;
+      font-weight: 200;
+      color: var(--gold);
+      opacity: 0.4;
+      letter-spacing: -2px;
+    }
+    .feature-title {
+      font-size: 14px;
+      letter-spacing: 3px;
+      font-weight: 500;
+      margin: 12px 0 8px;
+    }
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* ===== SHOWCASE ===== */
+    .showcase {
+      padding: 120px 0;
+    }
+    .showcase-header {
+      padding: 0 60px;
+      margin-bottom: 60px;
+    }
+    .showcase-scroll {
+      display: flex;
+      gap: 24px;
+      padding: 0 60px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .showcase-scroll::-webkit-scrollbar { display: none; }
+    .showcase-item {
+      flex: 0 0 380px;
+      height: 480px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.4s;
+    }
+    .showcase-item::before {
+      content: attr(data-label);
+      position: absolute;
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      bottom: 24px;
+      left: 24px;
+    }
+    .showcase-item::after {
+      content: attr(data-name);
+      position: absolute;
+      font-size: 20px;
+      letter-spacing: 6px;
+      font-weight: 300;
+      color: var(--text-primary);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.3;
+      transition: opacity 0.4s;
+    }
+    .showcase-item:hover { border-color: var(--gold); }
+    .showcase-item:hover::after { opacity: 0.7; }
+
+    /* ===== CONTACT ===== */
+    .contact { background: var(--bg-card); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1100px;
+      margin: 60px auto 0;
+    }
+    .contact-info-item {
+      margin-bottom: 36px;
+    }
+    .contact-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .contact-value {
+      font-size: 15px;
+      color: var(--text-primary);
+      line-height: 1.8;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: flex; gap: 16px; }
+    .form-input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.3s;
+      letter-spacing: 1px;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus { border-color: var(--gold); }
+    .form-textarea {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      height: 120px;
+      transition: border-color 0.3s;
+      letter-spacing: 1px;
+    }
+    .form-textarea::placeholder { color: var(--text-muted); }
+    .form-textarea:focus { border-color: var(--gold); }
+    .form-submit {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 16px 40px;
+      font-size: 12px;
+      letter-spacing: 4px;
+      font-family: inherit;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { background: var(--gold); color: var(--bg-dark); }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo {
+      font-size: 16px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      font-weight: 500;
+    }
+    .footer-logo span { color: var(--text-muted); font-weight: 300; }
+    .footer-copy {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .section { padding: 80px 24px; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .products-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+
+    /* ===== ANIMATE ON SCROLL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">微立煌明 <span>/ WEILI LIGHTING</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">关于我们</a></li>
+    <li><a href="#products">产品中心</a></li>
+    <li><a href="#showcase">案例展示</a></li>
+    <li><a href="#contact">联系我们</a></li>
+  </ul>
+  <a href="#contact" class="nav-contact">询价</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-subtitle">中山市 · 灯饰之都</div>
+  <h1 class="hero-title">用光，<strong>点亮</strong>生活</h1>
+  <p class="hero-desc">专注于精品灯具设计与智造，为家居、商业、户外空间提供高品质照明解决方案</p>
+  <a href="#products" class="hero-cta">探索产品</a>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+  <div class="section-tag reveal">About Us</div>
+  <div class="section-title reveal">关于微立煌明</div>
+  <div class="section-line reveal"></div>
+  <div class="section-desc reveal">
+    中山微立煌明照明有限公司坐落于中国灯饰之都——广东省中山市古镇，是一家集研发、生产、销售于一体的专业照明企业。我们致力于为每一位客户打造兼具美学与功能的灯光解决方案。
+  </div>
+  <div class="about-grid">
+    <div class="about-img reveal"></div>
+    <div class="about-text reveal">
+      <p>我们拥有完整的产品线，覆盖家居照明、商业照明、户外景观照明等多个领域。每一款产品都经过严选材质与精密工艺，确保品质卓越、经久耐用。</p>
+      <p>公司以"品质为先、诚信为本"为经营理念，产品远销国内外，深受客户信赖。我们相信：好的灯光不仅是照明，更是空间的气质与灵魂。</p>
+      <div class="about-stats">
+        <div class="stat">
+          <div class="stat-num">8+</div>
+          <div class="stat-label">年行业经验</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">500+</div>
+          <div class="stat-label">合作客户</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">1000+</div>
+          <div class="stat-label">SKU产品</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section products" id="products">
+  <div class="section-tag reveal">Products</div>
+  <div class="section-title reveal">产品<span style="color:var(--gold)">·</span>系列</div>
+  <div class="section-line reveal"></div>
+  <div class="section-desc reveal">涵盖家居、商业、户外全场景照明需求，精工品质，美学呈现</div>
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <span class="product-icon">💡</span>
+      <div class="product-name">家居照明</div>
+      <div class="product-desc">吊灯、吸顶灯、台灯、壁灯，简约、北欧、轻奢多风格可选</div>
+      <span class="product-tag">indoor</span>
+    </div>
+    <div class="product-card reveal">
+      <span class="product-icon">🏢</span>
+      <div class="product-name">商业照明</div>
+      <div class="product-desc">导轨灯、射灯、面板灯、展柜灯，专业配光，高显指无频闪</div>
+      <span class="product-tag">commercial</span>
+    </div>
+    <div class="product-card reveal">
+      <span class="product-icon">🌿</span>
+      <div class="product-name">户外照明</div>
+      <div class="product-desc">投光灯、洗墙灯、路灯、庭院灯，IP65+防护等级，耐久可靠</div>
+      <span class="product-tag">outdoor</span>
+    </div>
+    <div class="product-card reveal">
+      <span class="product-icon">✨</span>
+      <div class="product-name">智能照明</div>
+      <div class="product-desc">可调光调色、智能语音控制、APP远程管理，接入主流IoT平台</div>
+      <span class="product-tag">smart</span>
+    </div>
+    <div class="product-card reveal">
+      <span class="product-icon">🎨</span>
+      <div class="product-name">灯具定制</div>
+      <div class="product-desc">非标尺寸、特殊材质、个性外观，支持ODM/OEM全流程服务</div>
+      <span class="product-tag">custom</span>
+    </div>
+    <div class="product-card reveal">
+      <span class="product-icon">⚡</span>
+      <div class="product-name">光源配件</div>
+      <div class="product-desc">LED驱动、光源模组、灯具配件，规格齐全，品质稳定</div>
+      <span class="product-tag">parts</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features" id="features">
+  <div class="section-tag reveal">Why Us</div>
+  <div class="section-title reveal">为什么选择<span style="color:var(--gold)">我们</span></div>
+  <div class="section-line reveal"></div>
+  <div class="features-grid">
+    <div class="feature-item reveal">
+      <div class="feature-num">01</div>
+      <div class="feature-title">精选材质</div>
+      <div class="feature-desc">铝合金、不锈钢、高透光亚克力，源头把控原材料品质</div>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feature-num">02</div>
+      <div class="feature-title">精密工艺</div>
+      <div class="feature-desc">数控加工、阳极氧化、静电喷涂，每道工序严格质检</div>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feature-num">03</div>
+      <div class="feature-title">柔性交付</div>
+      <div class="feature-desc">小批量起订，7-15天快速打样，批量生产准时交付</div>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feature-num">04</div>
+      <div class="feature-title">售后无忧</div>
+      <div class="feature-desc">2年质保，专业技术支持，48小时响应客户诉求</div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="section showcase" id="showcase">
+  <div class="showcase-header">
+    <div class="section-tag reveal">Cases</div>
+    <div class="section-title reveal">案例<span style="color:var(--gold)">·</span>展示</div>
+    <div class="section-line reveal"></div>
+  </div>
+  <div class="showcase-scroll">
+    <div class="showcase-item reveal" data-label="家居" data-name="客厅吊灯">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%, rgba(201,168,76,0.12), transparent 70%);"></div>
+    </div>
+    <div class="showcase-item reveal" data-label="商业" data-name="酒店大堂">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%, rgba(201,168,76,0.12), transparent 70%);"></div>
+    </div>
+    <div class="showcase-item reveal" data-label="户外" data-name="园林景观">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%, rgba(201,168,76,0.12), transparent 70%);"></div>
+    </div>
+    <div class="showcase-item reveal" data-label="智能" data-name="办公室照明">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%, rgba(201,168,76,0.12), transparent 70%);"></div>
+    </div>
+    <div class="showcase-item reveal" data-label="定制" data-name="博物馆照明">
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 30%, rgba(201,168,76,0.12), transparent 70%);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact" id="contact">
+  <div class="section-tag reveal">Contact</div>
+  <div class="section-title reveal">联系<span style="color:var(--gold)">我们</span></div>
+  <div class="section-line reveal"></div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <div class="contact-info-item">
+        <div class="contact-label">Address</div>
+        <div class="contact-value">广东省中山市古镇灯饰产业基地</div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-label">Phone</div>
+        <div class="contact-value">400-XXXX-XXXX</div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-label">Email</div>
+        <div class="contact-value">info@zsweili.com</div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-label">Business Hours</div>
+        <div class="contact-value">周一至周六  08:30 - 18:00</div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-label">WeChat</div>
+        <div class="contact-value">微立煌明照明（扫码咨询）</div>
+      </div>
+    </div>
+    <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <input class="form-input" type="text" placeholder="您的姓名 *" required>
+        <input class="form-input" type="email" placeholder="电子邮箱 *" required>
+      </div>
+      <input class="form-input" type="text" placeholder="公司名称">
+      <input class="form-input" type="text" placeholder="联系电话 *">
+      <textarea class="form-textarea" placeholder="请描述您的需求（产品类型、数量、用途等）"></textarea>
+      <button type="submit" class="form-submit">提交询价</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">微立煌明 <span>/ WEILI LIGHTING</span></div>
+  <div class="footer-copy">© 2026 中山微立煌明照明有限公司 版权所有</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = '已提交 ✓';
+    btn.style.borderColor = '#4caf50';
+    btn.style.color = '#4caf50';
+    setTimeout(() => {
+      btn.textContent = '提交询价';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
